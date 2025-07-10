@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from "express"
 import { envVars } from "../config/env"
 import AppError from "../errorHelplers/AppError";
 
-export const globalErroHandles = (err: any, req: Request, res: Response, next: NextFunction) => {
+export const globalErrorHandles = (err: any, req: Request, res: Response, next: NextFunction) => {
 
     let statusCode = 500;
     let message = "Something went wrong";
