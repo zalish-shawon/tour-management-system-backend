@@ -44,7 +44,7 @@ const userSchema = new Schema<IUser> ({
         default: IsActive.ACTIVE,
     },
     isVerified: {
-        type: String,
+        type: Boolean,
         default: false,
     },
     role: {

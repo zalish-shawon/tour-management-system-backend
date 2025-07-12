@@ -5,15 +5,20 @@ dotenv.config()
 interface EnvConfig {
     PORT: string,
     DB_URL: string,
-    NODE_ENV: "development" | "production"
+    NODE_ENV: "development" | "production",
+    JWT_ACCESS_KEY?: string,
+    JWT_ACCESS_EXPIRES?: string,
+    BCRYPT_SALT_ROUNDS?: string,
+    SUPER_ADMIN_EMAIL?: string,
+    SUPER_ADMIN_PASSWORD?: string
 }
 
 const loadEnvVariables = (): EnvConfig => {
-    const requiredEnvVariables: string[] = ["PORT", "DB_URL", "NODE_ENV"];
+    const requiredEnvVariables: string[] = ["PORT", "DB_URL", "NODE_ENV", "JWT_ACCESS_KEY", "JWT_ACCESS_EXPIRES", "BCRYPT_SALT_ROUNDS", "SUPER_ADMIN_EMAIL", "SUPER_ADMIN_PASSWORD"];
 
     requiredEnvVariables.forEach(key => {
         if (!process.env[key]) {
-            throw new Error(`Missing require environment variabl ${key}`)
+            throw new Error(`Missing require environment variable ${key}`)
         }
     })
 
@@ -21,7 +26,12 @@ const loadEnvVariables = (): EnvConfig => {
         PORT: process.env.PORT as string,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         DB_URL: process.env.DB_URL!,
-        NODE_ENV: process.env.NODE_ENV as "development" | "production"
+        NODE_ENV: process.env.NODE_ENV as "development" | "production",
+        JWT_ACCESS_KEY: process.env.JWT_ACCESS_KEY as string,
+        JWT_ACCESS_EXPIRES: process.env.JWT_ACCESS_EXPIRES as string,
+        BCRYPT_SALT_ROUNDS: process.env.BCRYPT_SALT_ROUNDS as string,
+        SUPER_ADMIN_EMAIL: process.env.SUPER_ADMIN_EMAIL as string,
+        SUPER_ADMIN_PASSWORD: process.env.SUPER_ADMIN_PASSWORD as string
     }
 }
 
