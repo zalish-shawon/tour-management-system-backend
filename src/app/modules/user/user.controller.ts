@@ -1,15 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { UserServices } from "./user.service";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
-import { JwtPayload } from "jsonwebtoken";
-import { verifyToken } from "../../utils/jwt";
-import { envVars } from "../../config/env";
 
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 const createUser = catchAsync(async(req: Request, res: Response, next: NextFunction)=> {
         const user = await UserServices.createUser(req.body);
 
