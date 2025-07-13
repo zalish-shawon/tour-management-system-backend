@@ -5,10 +5,15 @@ import { sendResponse } from "../../utils/sendResponse"
 import httpStatus from "http-status-codes"
 import { User } from "../user/user.model"
 import { AuthService } from "./auth.service"
+import AppError from "../../errorHelpers/AppError"
+import { setAuthCookie } from "../../utils/setCookie"
 
 const credentialsLogin =  catchAsync(async(req: Request, res: Response, next: NextFunction)=> {
 
         const loginInfo = await AuthService.credentialsLogin(req.body);
+
+
+        setAuthCookie(res, loginInfo)
 
         sendResponse(res, {
             success: true,
@@ -18,8 +23,66 @@ const credentialsLogin =  catchAsync(async(req: Request, res: Response, next: Ne
         })
 })
 
+const getNewAccessToken =  catchAsync(async(req: Request, res: Response, next: NextFunction)=> {
+        const refreshToken = req.cookies.refreshToken;
+        if(!refreshToken) {
+            throw new AppError( httpStatus.BAD_REQUEST, "No refresh token received from token" )
+        }
+        const tokenInfo = await AuthService.getNewAccessToken(refreshToken as string);
+
+        setAuthCookie(res, tokenInfo);
+
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "New access token retrived successfully",
+            data: tokenInfo,
+        })
+})
+
+const logout =  catchAsync(async(req: Request, res: Response, next: NextFunction)=> {
+
+        res.clearCookie("accessToken", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+        });
+
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+        })
+
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "User logged out successfully",
+            data: null,
+        })
+})
+
+const resetPassword =  catchAsync(async(req: Request, res: Response, next: NextFunction)=> {
+
+        const decodedToken = req.user;
+
+        const newPassword = req.body.password;
+
+        const newUpdatedPassword = await AuthService.resetPassword(decodedToken, newPassword);
+
+        sendResponse(res, {
+            success: true,
+            statusCode: httpStatus.OK,
+            message: "User logged out successfully",
+            data: null,
+        })
+})
+
 
 export const AuthControllers = {
     credentialsLogin,
+    getNewAccessToken,
+    logout,
+    resetPassword,
     
 }
