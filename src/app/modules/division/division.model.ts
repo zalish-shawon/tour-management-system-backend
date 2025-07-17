@@ -11,5 +11,4 @@ const divisionSchema = new Schema<IDivision>({
 
 
 
-
 export const Division = model<IDivision>("Division", divisionSchema);
