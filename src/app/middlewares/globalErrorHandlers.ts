@@ -11,6 +11,10 @@ import { handlerValidationError } from "../helpers/handlerValidationError";
 
 export const globalErrorHandles = (err: any, req: Request, res: Response, next: NextFunction) => {
 
+    let errorSources: any = [
+        // 
+    ]
+
     let statusCode = 500;
     let message = "Something went wrong";
 
