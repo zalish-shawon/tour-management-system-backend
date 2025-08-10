@@ -8,15 +8,27 @@ import { handleCastError } from "../helpers/handleCastError";
 import { handlerZodError } from "../helpers/handlerZodError";
 import { TErrorSources } from "../interfaces/error.types";
 import { handlerValidationError } from "../helpers/handlerValidationError";
+import { deleteImageFromCLoudinary } from "../config/cloudinary.config";
 
-export const globalErrorHandles = (err: any, req: Request, res: Response, next: NextFunction) => {
+export const globalErrorHandles = async (err: any, req: Request, res: Response, next: NextFunction) => {
+   
+    if (envVars.NODE_ENV === "development") {
+        console.log(err);
+    }
+    console.log({ file: req.files });
+    if (req.file) {
+        await deleteImageFromCLoudinary(req.file.path)
+    }
 
-    let errorSources: any = [
-        // 
-    ]
+    if (req.files && Array.isArray(req.files) && req.files.length) {
+        const imageUrls = (req.files as Express.Multer.File[]).map(file => file.path)
 
-    let statusCode = 500;
-    let message = "Something went wrong";
+        await Promise.all(imageUrls.map(url => deleteImageFromCLoudinary(url)))
+    }
+
+    let errorSources: TErrorSources[] = []
+    let statusCode = 500
+    let message = "Something Went Wrong!!"
 
     //Duplicate error
     if (err.code === 11000) {
